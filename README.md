@@ -1,0 +1,1 @@
+![CI](https://github.com/a-othman/schema_validator/actions/workflows/ci.yml/badge.svg)

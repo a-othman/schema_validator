@@ -1,7 +1,7 @@
 import argparse
 from schema_validator.main import add
 
-def main():
+def add_cli():
     parser = argparse.ArgumentParser(description="add two numbers.")
     parser.add_argument("a", type=float, help="First number.")
     parser.add_argument("b", type=float, help="Second number.")
