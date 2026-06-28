@@ -1,0 +1,20 @@
+name: CI
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:           
+      - name: checkout code
+        uses: actions/checkout@v6
+
+      - name: install uv
+        uses: astral-sh/setup-uv@v8
+
+      - name: run tests
+        run: uv run --frozen pytest
