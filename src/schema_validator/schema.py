@@ -7,17 +7,39 @@ class FormatType(Enum):
     BINARY = "binary"
     UUID = "uuid"
 
+class DataType(Enum):
+    INTEGER = "integer"
+    FLOAT = "float"
+    DECIMAL = "decimal"
+    STRING = "string"
+    BOOLEAN = "boolean"
+    DATE = "date"
+    TIMESTAMP = "timestamp"
+
+    BIGINT = "bigint"
+    SMALLINT = "smallint"
+    TIME = "time"
+    TIMESTAMP_TZ = "timestamp_tz"
+    
+
 @dataclass
 class ColumnInfo:
     name: str
-    data_type: str
+    data_type: DataType
     nullable: bool
     format: FormatType | None = None
     description: str | None = None
 
     def __post_init__(self):
-        if self.format is not None and not isinstance(self.format, FormatType):
+        if not isinstance(self.data_type, DataType):
+            raise TypeError(f"Invalid data type: {self.data_type}. Must be an instance of DataType Enum.")
+
+        if self.data_type != DataType.STRING and self.format is not None:
+            raise ValueError(f"Format is only applicable for STRING data type. Got {self.data_type} instead.")
+        elif self.data_type == DataType.STRING and self.format is not None and not isinstance(self.format, FormatType):
             raise TypeError(f"Invalid format type: {self.format}. Must be an instance of FormatType Enum.")
+
+
 
 @dataclass
 class TableSchema:
@@ -29,14 +51,7 @@ class TableSchema:
     def __post_init__(self):
         if self.primary_key and not any(col.name == self.primary_key for col in self.columns):
             raise ValueError(f"Primary key '{self.primary_key}' does not exist in the columns.")
-
-if __name__ == "__main__":
-    columns = [
-        ColumnInfo(name="id", data_type="int", nullable=False, description="User ID",),
-        ColumnInfo(name="name", data_type="varchar", nullable=False, description="User Name"),
-        ColumnInfo(name="email", data_type="varchar", format=FormatType.EMAIL, nullable=True, description="User Email")
-    ]
-    
-    table_schema = TableSchema(name="users", columns=columns, description="User information table", primary_key="id")
-    print(table_schema)
-
+        
+        columns_names=[col.name for col in self.columns]
+        if len(columns_names) != len(set(columns_names)):
+            raise ValueError("Column names must be unique within a table schema.")
