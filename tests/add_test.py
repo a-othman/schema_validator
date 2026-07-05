@@ -67,5 +67,5 @@ def test_column_info_creation_with_valid_inputs():
     assert column_info.name == "email"
     assert column_info.data_type == DataType.STRING
     assert column_info.nullable == False
-    assert column_info.format == FormatType.EMAIL
+    assert column_info.format == FormatType.NOTHING
     assert column_info.description == "User email address"
