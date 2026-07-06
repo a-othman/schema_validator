@@ -1,4 +1,4 @@
-from schema_validator.schema import ColumnInfo, TableSchema, DataType, FormatType
+from schema_validator.domain.schema import ColumnInfo, TableSchema, DataType, FormatType
 import pytest
 
 def test_column_info_creation_with_only_required_args():

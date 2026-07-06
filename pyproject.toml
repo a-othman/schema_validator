@@ -19,4 +19,3 @@ dev = [
 ]
 
 [project.scripts]
-pv = "schema_validator.cli:add_cli"
