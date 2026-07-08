@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-
+from datetime import date, time, datetime    
 class FormatType(Enum):
     EMAIL = "email"
     URL = "url"
@@ -23,12 +23,19 @@ class DataType(Enum):
     
 
 @dataclass
+class Constraints:
+    min_value: float | int | date | time | datetime | None = None
+    max_value: float | int | date | time | datetime | None = None
+    allowed_values: list[str | int | float | bool] | None = None
+
+@dataclass
 class ColumnInfo:
     name: str
     data_type: DataType
     nullable: bool
     format: FormatType | None = None
     description: str | None = None
+    constraints: Constraints | None = None
 
     def __post_init__(self):
         if not isinstance(self.data_type, DataType):
@@ -36,10 +43,35 @@ class ColumnInfo:
 
         if self.data_type != DataType.STRING and self.format is not None:
             raise ValueError(f"Format is only applicable for STRING data type. Got {self.data_type} instead.")
-        elif self.data_type == DataType.STRING and self.format is not None and not isinstance(self.format, FormatType):
+        
+        if self.data_type == DataType.STRING and self.format is not None and not isinstance(self.format, FormatType):
             raise TypeError(f"Invalid format type: {self.format}. Must be an instance of FormatType Enum.")
+        
+        if self.constraints is None:
+            return
+        
+        
+        
+        if not isinstance(self.constraints.min_value, (float, int, date, time, datetime)) or \
+                not isinstance(self.constraints.max_value, (float, int, date, time, datetime)):
+            raise ValueError("min_value and max_value must be of type float, int, date, time, datetime")
+        
+        if self.constraints.min_value> self.constraints.max_value:
+            raise ValueError("Min value should me smaller than max value")    
+        
+        if self.data_type == DataType.STRING and self.constraints.allowed_values is not None:
+            if not any(isinstance(value, str) for value in self.constraints.allowed_values):
+                raise ValueError("Allowed values for STRING data type must be strings.")
+
+        if self.data_type == DataType.INTEGER and self.constraints.allowed_values is not None:
+            if not any(isinstance(value, (int, float)) for value in self.constraints.allowed_values):
+                raise ValueError("Allowed values for INTEGER data type must be integers or floats.")
+        
+
+        
 
 
+        
 
 @dataclass
 class TableSchema:
