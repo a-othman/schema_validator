@@ -1,7 +1,7 @@
 [project]
 name = "schema-validator"
 version = "0.1.0"
-description = "Add your description here"
+description = "inital version of schema valdiation library"
 readme = "README.md"
 authors = [
     { name = "ahmed.othman", email = "ahmed.n.othman01@gmail.com" }
